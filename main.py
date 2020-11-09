@@ -120,7 +120,7 @@ def custom_loss(y_true, y_pred):
     
     # sum coordinates of center of boxes with cell offsets.
     # as pred boxes are limited to 0 to 1 range, pred x,y + offset is limited to predicting elements inside a cell
-    y_pred_xy   = pred_boxes[...,0:2] + K.variable(grid)
+    y_pred_xy   = pred_boxes[...,0:2] + (grid)
     # w and h predicted are 0 to 1 with 1 being image size
     y_pred_wh   = pred_boxes[...,2:4]
     # probability that there is something to predict here

@@ -25,6 +25,7 @@ x_train = []
 y_train = []
 
 nb_boxes=1
+categories = 3
 grid_w=2
 grid_h=2
 cell_w=64
@@ -42,11 +43,17 @@ def load_image(j):
     x_t = img_to_array(img)
 
     y_t = []
+
     with open("Labels/%d.txt" % j, newline = '\n') as csvfile:
         reader = csv.reader(csvfile, delimiter= ',')
         for train_vec in reader:
-              y_t.append([float(s) for s in train_vec])
-        
+              c_t = [float(s) for s in train_vec[:categories]]
+              x_t = [float(s) for s in train_vec[categories:]]
+              
+              for b in range(nb_boxes):
+                  x_t += x_t
+                  
+              y_t.append(c_t + x_t)
     return [x_t, y_t]
 
 #

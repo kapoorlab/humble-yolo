@@ -2,6 +2,16 @@ humble-yolo is a minimal implementation of YOLO v1 I wrote to learn about the am
 Tutorial details:
 
 https://medium.com/@ecaradec/humble-yolo-implementation-in-keras-64d1b63b4412
+
+
+# Installation Instructions
+In order to use this program tensorflow and keras library are required. 
+1. Download python3.8 version of [anaconda](https://www.anaconda.com/distribution/).
+2. After downloading it, open the anaconda terminal and set the proxy settings to enable pip and conda installation via terminal.
+3. Set up a virtual enviornment type this command at anaconda prompt: conda create -n tensorflowGPU pip python=3.8  
+4. Activate the virtual enviornment: source activate tensorflowGPU
+5. Install tensorflow and keras library by executing pip install keras tensorflow.
+
 To test it run :
 
 1. cd to the directory where this repo is clone by writing this in the terminal: cd humble-yolo

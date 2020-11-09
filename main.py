@@ -14,7 +14,7 @@ import numpy as np
 import sys
 import cv2
 import argparse
-
+import csv
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 
 import matplotlib.pyplot as plt
@@ -27,8 +27,8 @@ y_train = []
 nb_boxes=1
 grid_w=2
 grid_h=2
-cell_w=32
-cell_h=32
+cell_w=64
+cell_h=64
 img_w=grid_w*cell_w
 img_h=grid_h*cell_h
 
@@ -41,19 +41,11 @@ def load_image(j):
     
     x_t = img_to_array(img)
 
-    with open("Labels/%d.txt" % j, "r") as f:
-        y_t = []
-        for row in range(grid_w):
-            for col in range(grid_h):
-                c_t = [float(i) for i in f.readline().split()]
-                [x, y, w, h] = [float(i) for i in f.readline().split()]        
-                conf_t = [float(i) for i in f.readline().split()]                
-                elt = []
-                elt += c_t
-                for b in range(nb_boxes):
-                    elt += [x/cell_w, y/cell_h, w/img_w, h/img_h] + conf_t
-                y_t.append(elt)
-        assert(f.readline()=="---\n")
+    y_t = []
+    with open("Labels/%d.txt" % j, newline = '\n') as csvfile:
+        reader = csv.reader(csvfile, delimiter= ',')
+        for train_vec in reader:
+              y_t.append([float(s) for s in train_vec])
         
     return [x_t, y_t]
 

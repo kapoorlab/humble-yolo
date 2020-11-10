@@ -28,7 +28,7 @@ for j in range(0,5000):
                 
                 (digits, cat) = get_word(random.randint(0,3))
 
-                width = len(digits)*6
+                width = len(digits)*10
                 
                 if(digits=='none'):
                     Event_data.append([cat[0],cat[1],cat[2],cat[3], (col*cell_w+cell_w/2)/cell_w, (row*cell_h+cell_h/2)/cell_h, cell_w/img_w, cell_h/img_h,0]) # confidence of object

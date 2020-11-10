@@ -25,7 +25,7 @@ x_train = []
 y_train = []
 
 nb_boxes=2
-categories = 3
+categories = 4
 grid_w=2
 grid_h=2
 cell_w=32
@@ -88,8 +88,8 @@ x = MaxPooling2D(pool_size=(2, 2))(x)
 
 x = Flatten()(x)
 x = Dense(256, activation='sigmoid')(x)
-x = Dense(grid_w*grid_h*(3+nb_boxes*5), activation='sigmoid')(x)
-x = Reshape((grid_w*grid_h,(3+nb_boxes*5)))(x)
+x = Dense(grid_w*grid_h*(categories+nb_boxes*5), activation='sigmoid')(x)
+x = Reshape((grid_w*grid_h,(categories+nb_boxes*5)))(x)
 
 model = Model(i, x)
 
@@ -111,12 +111,12 @@ def custom_loss(y_true, y_pred):
     # first three values are classes : cat, rat, and none.
     # However yolo doesn't predict none as a class, none is everything else and is just not predicted
     # so I don't use it in the loss
-    y_true_class = y_true[...,0:2]
-    y_pred_class = y_pred[...,0:2] 
+    y_true_class = y_true[...,0:categories - 1]
+    y_pred_class = y_pred[...,0:categories - 1] 
 
     # reshape array as a list of grid / grid cells / boxes / of 5 elements
-    pred_boxes = K.reshape(y_pred[...,3:], (-1,grid_w*grid_h,nb_boxes,5))
-    true_boxes = K.reshape(y_true[...,3:], (-1,grid_w*grid_h,nb_boxes,5))
+    pred_boxes = K.reshape(y_pred[...,categories:], (-1,grid_w*grid_h,nb_boxes,5))
+    true_boxes = K.reshape(y_true[...,categories:], (-1,grid_w*grid_h,nb_boxes,5))
     
     # sum coordinates of center of boxes with cell offsets.
     # as pred boxes are limited to 0 to 1 range, pred x,y + offset is limited to predicting elements inside a cell

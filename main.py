@@ -8,7 +8,7 @@ from keras.layers import Conv2D, MaxPooling2D
 
 from keras.layers.advanced_activations import LeakyReLU, PReLU
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 os.environ["HDF5_USE-FILE_LOCKING"]="FALSE"
 from keras import backend as K
 from keras.models import load_model
@@ -26,7 +26,7 @@ import matplotlib.patches as patches
 x_train = []
 y_train = []
 
-nb_boxes= 5
+nb_boxes= 4
 categories = 4
 grid_w=1
 grid_h=1
@@ -155,7 +155,7 @@ def custom_loss(y_true, y_pred):
     conf_loss = K.sum(K.square(y_true_conf*iou - y_pred_conf), axis=-1)
 
     # final loss function
-    d = xy_loss + wh_loss + conf_loss + clss_loss
+    d = 2 * xy_loss + wh_loss + conf_loss + clss_loss
     
     if False:
         d = tf.Print(d, [d], "loss")
@@ -181,10 +181,10 @@ args = parser.parse_args()
 
 if args.train:
     
-    if os.path.exists('simpleyolo.h5'):
+    if os.path.exists('cordyolo.h5'):
     
         print('loading weights')
-        model.load_weights('simpleyolo.h5')
+        model.load_weights('cordyolo.h5')
     
 
     adam = keras.optimizers.SGD(lr=float(args.learning_rate))
@@ -192,9 +192,9 @@ if args.train:
     print(model.summary())
     model.fit(x_train, y_train, batch_size=200, epochs=int(args.epoch))
 
-    model.save_weights('simpleyolo.h5')
+    model.save_weights('cordyolo.h5')
 else:
-    model.load_weights('simpleyolo.h5')
+    model.load_weights('cordyolo.h5')
 
 axes=[0 for _ in range(100)]
 fig, axes = plt.subplots(5,5)
@@ -228,6 +228,11 @@ for j in range(0,25):
             imgplot = plt.imshow(img)
 
             i = 0
+            xmean = 0
+            ymean = 0
+            wmean = 0
+            hmean = 0
+            confmean = 0
             for b in boxes:
                 x = b[0]+float(row)
                 y = b[1]+float(col)
@@ -235,14 +240,25 @@ for j in range(0,25):
                 h = b[3]
                 conf = b[4]
                 if conf < 0.5:
-                    continue
+                   continue
+                xmean = xmean + x
+                ymean = ymean + y
+                wmean = wmean + w
+                hmean = hmean + h
+                confmean = confmean + conf
+            if confmean < 0.5:
+               continue
+            xmean = xmean/len(boxes)
+            ymean = ymean/len(boxes)
+            wmean = wmean/len(boxes)
+            hmean = hmean/len(boxes)
+            confmean = confmean/len(boxes)    
+            color = ['r','g','b','0'][clss]
+            rect = patches.Rectangle((xmean*cell_w-wmean/2*img_w, ymean*cell_h-hmean/2*img_h), wmean*img_h, hmean*img_h, linewidth=1,edgecolor=color,facecolor='none')
+            ax.add_patch(rect)
 
-                color = ['r','g','b','0'][clss]
-                rect = patches.Rectangle((x*cell_w-w/2*img_w, y*cell_h-h/2*img_h), w*img_h, h*img_h, linewidth=1,edgecolor=color,facecolor='none')
-                ax.add_patch(rect)
-
-                ax.text( (x*cell_w-w/2*img_w) / img_w, 1-(y*cell_h-h/2*img_h)/img_h-i*0.15, "%0.2f" % (conf), transform=ax.transAxes, color=color)
-                i+=1
+            ax.text( (xmean*cell_w-w/2*img_w) / img_w, 1-(ymean*cell_h-hmean/2*img_h)/img_h-i*0.15, "%0.2f" % (confmean), transform=ax.transAxes, color=color)
+            i+=1
 
 plt.show()
 

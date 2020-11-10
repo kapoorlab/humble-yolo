@@ -28,7 +28,7 @@ for j in range(0,5000):
                 
                 (digits, cat) = get_word(random.randint(0,3))
 
-                width = len(digits)*8
+                width = len(digits)*6
                 
                 if(digits=='none'):
                     Event_data.append([cat[0],cat[1],cat[2],cat[3], (col*cell_w+cell_w/2)/cell_w, (row*cell_h+cell_h/2)/cell_h, cell_w/img_w, cell_h/img_h,0]) # confidence of object
@@ -39,7 +39,7 @@ for j in range(0,5000):
                     y = row*cell_h + cell_h//2
                     
                     d.text((x-width/2, y-10/2), digits, fill=(255,255,255))
-                    Event_data.append([cat[0],cat[1],cat[2],cat[3], x/cell_w, y/cell_h, width/img_w, 20/img_h, 1]) # confidence of object
+                    Event_data.append([cat[0],cat[1],cat[2],cat[3], x/cell_w, y/cell_h, width/img_w, 15/img_h, 1]) # confidence of object
                     
                     #print("Objt", (col,row), (x/cell_w, y/cell_h, width/img_w, 20/img_h), 1)
         FileName = 'Labels' + "/" + str(j)  + ".txt"             

@@ -24,7 +24,7 @@ import matplotlib.patches as patches
 x_train = []
 y_train = []
 
-nb_boxes=1
+nb_boxes=2
 categories = 3
 grid_w=2
 grid_h=2
@@ -43,17 +43,19 @@ def load_image(j):
     x_t = img_to_array(img)
 
     y_t = []
-
     with open("Labels/%d.txt" % j, newline = '\n') as csvfile:
         reader = csv.reader(csvfile, delimiter= ',')
         for train_vec in reader:
-              c_t = [float(s) for s in train_vec[:categories]]
-              x_t = [float(s) for s in train_vec[categories:]]
-              
-              for b in range(nb_boxes):
-                  x_t += x_t
-                  
-              y_t.append(c_t + x_t)
+               catarr = [float(s) for s in train_vec[:categories]]
+               xarr = [float(s) for s in train_vec[categories:]]
+               for b in range(nb_boxes - 1):
+                   xarr+= [xarr[s] for s in range(len(xarr))]
+                   
+               trainarr = catarr + xarr    
+               print(trainarr)
+               y_t.append(trainarr)
+               
+    
     return [x_t, y_t]
 
 #

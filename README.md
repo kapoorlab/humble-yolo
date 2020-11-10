@@ -1,4 +1,4 @@
-humble-yolo is a minimal implementation of YOLO v1 I wrote to learn about the amazing YOLO algorithm.
+humble-yolo is a minimal implementation of YOLO v1 to learn about the amazing YOLO algorithm.
 Tutorial details:
 
 https://medium.com/@ecaradec/humble-yolo-implementation-in-keras-64d1b63b4412

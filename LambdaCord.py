@@ -155,7 +155,7 @@ def custom_loss(y_true, y_pred):
     conf_loss = K.sum(K.square(y_true_conf*iou - y_pred_conf), axis=-1)
 
     # final loss function
-    d =  1.5 * xy_loss + wh_loss + conf_loss + clss_loss
+    d =  1.5 * (xy_loss + wh_loss) + conf_loss + clss_loss
     
     if False:
         d = tf.Print(d, [d], "loss")

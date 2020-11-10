@@ -8,6 +8,8 @@ from keras.layers import Conv2D, MaxPooling2D
 
 from keras.layers.advanced_activations import LeakyReLU, PReLU
 import os
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["HDF5_USE-FILE_LOCKING"]="FALSE"
 from keras import backend as K
 from keras.models import load_model
 import numpy as np
@@ -24,12 +26,12 @@ import matplotlib.patches as patches
 x_train = []
 y_train = []
 
-nb_boxes=2
+nb_boxes=1
 categories = 4
-grid_w=2
-grid_h=2
-cell_w=128
-cell_h=128
+grid_w=1
+grid_h=1
+cell_w= 128
+cell_h= 128
 img_w=grid_w*cell_w
 img_h=grid_h*cell_h
 
@@ -46,12 +48,13 @@ def load_image(j):
     with open("Labels/%d.txt" % j, newline = '\n') as csvfile:
         reader = csv.reader(csvfile, delimiter= ',')
         for train_vec in reader:
-               catarr = [float(s) for s in train_vec[:categories]]
+               catarr = [float(s) for s in train_vec[0:categories]]
                xarr = [float(s) for s in train_vec[categories:]]
                for b in range(nb_boxes - 1):
                    xarr+= [xarr[s] for s in range(len(xarr))]
                    
                trainarr = catarr + xarr    
+               
                y_t.append(trainarr)
                
     
@@ -111,8 +114,8 @@ def custom_loss(y_true, y_pred):
     # first three values are classes : cat, rat, and none.
     # However yolo doesn't predict none as a class, none is everything else and is just not predicted
     # so I don't use it in the loss
-    y_true_class = y_true[...,0:categories - 1]
-    y_pred_class = y_pred[...,0:categories - 1] 
+    y_true_class = y_true[...,0:categories]
+    y_pred_class = y_pred[...,0:categories] 
 
     # reshape array as a list of grid / grid cells / boxes / of 5 elements
     pred_boxes = K.reshape(y_pred[...,categories:], (-1,grid_w*grid_h,nb_boxes,5))
@@ -164,10 +167,7 @@ def custom_loss(y_true, y_pred):
 
 model = Model(i, x)
 
-adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, decay=0.01)
-model.compile(loss=custom_loss, optimizer=adam) # better
 
-print(model.summary())
 
 #
 # Training the network
@@ -175,6 +175,7 @@ print(model.summary())
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('--train', help='train', action='store_true')
 parser.add_argument('--epoch', help='epoch', const='int', nargs='?', default=1)
+parser.add_argument('--learning_rate', help='learning_rate', const = 'double', nargs='?',default = 0.0001)
 args = parser.parse_args()
 
 if args.train:
@@ -184,6 +185,10 @@ if args.train:
         print('loading weights')
         model.load_weights('simpleyolo.h5')
     
+
+    adam = keras.optimizers.SGD(lr=float(args.learning_rate))
+    model.compile(loss=custom_loss, optimizer=adam) # better
+    print(model.summary())
     model.fit(x_train, y_train, batch_size=64, epochs=int(args.epoch))
 
     model.save_weights('simpleyolo.h5')

@@ -28,8 +28,8 @@ nb_boxes=2
 categories = 4
 grid_w=2
 grid_h=2
-cell_w=32
-cell_h=32
+cell_w=128
+cell_h=128
 img_w=grid_w*cell_w
 img_h=grid_h*cell_h
 
@@ -215,8 +215,8 @@ for j in range(0,25):
         for col in range(grid_h):
             p = P[0][col*grid_h+row]
 
-            boxes = p[3:].reshape(nb_boxes,5)
-            clss = np.argmax(p[0:2])
+            boxes = p[categories:].reshape(nb_boxes,5)
+            clss = np.argmax(p[0:categories - 1])
             
             ax = plt.subplot(5,5,j+1)
             imgplot = plt.imshow(img)

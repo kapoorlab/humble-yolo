@@ -12,8 +12,8 @@ def get_word(c):
     words = ["Trump Lost", "Biden Won", "Haris Won", "none"]
     return (words[c], one_hot(c,len(words)))
 
-cell_w = 32
-cell_h = 32
+cell_w = 128
+cell_h = 128
 grid_w = 2
 grid_h = 2
 img_w=grid_w*cell_w
@@ -36,7 +36,7 @@ for j in range(0,5000):
                     
                 else:
                     x = random.randrange(col*cell_w, (col+1)*cell_w)
-                    y = random.randrange(row*cell_w, min(67, (row+1)*cell_h))
+                    y = random.randrange(row*cell_w, (row+1)*cell_h)
                     
                     d.text((x-width/2, y-10/2), digits, fill=(255,255,255))
                     Event_data.append([cat[0],cat[1],cat[2],cat[3], x/cell_w, y/cell_h, width/img_w, 10/img_h, 1]) # confidence of object

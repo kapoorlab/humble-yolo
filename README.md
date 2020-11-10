@@ -13,7 +13,7 @@ In order to use this program tensorflow and keras library are required.
 3. Set up a virtual enviornment type this command at anaconda prompt: conda create -n tensorflowGPU pip python=3.8  
 4. Activate the virtual enviornment: source activate tensorflowGPU
 5. Install tensorflow and keras library by executing pip install keras tensorflow.
-
+6. To install all the other packages execute pip install -r requirements.txt
 To test it run :
 
 1. cd to the directory where this repo is clone by writing this in the terminal: cd humble-yolo

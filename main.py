@@ -26,7 +26,7 @@ import matplotlib.patches as patches
 x_train = []
 y_train = []
 
-nb_boxes=1
+nb_boxes= 5
 categories = 4
 grid_w=1
 grid_h=1
@@ -50,10 +50,11 @@ def load_image(j):
         for train_vec in reader:
                catarr = [float(s) for s in train_vec[0:categories]]
                xarr = [float(s) for s in train_vec[categories:]]
-               for b in range(nb_boxes - 1):
-                   xarr+= [xarr[s] for s in range(len(xarr))]
+               newxarr = []
+               for b in range(nb_boxes):
+                   newxarr+= [xarr[s] for s in range(len(xarr))]
                    
-               trainarr = catarr + xarr    
+               trainarr = catarr + newxarr    
                
                y_t.append(trainarr)
                
@@ -120,10 +121,10 @@ def custom_loss(y_true, y_pred):
     # reshape array as a list of grid / grid cells / boxes / of 5 elements
     pred_boxes = K.reshape(y_pred[...,categories:], (-1,grid_w*grid_h,nb_boxes,5))
     true_boxes = K.reshape(y_true[...,categories:], (-1,grid_w*grid_h,nb_boxes,5))
-    
+      
     # sum coordinates of center of boxes with cell offsets.
     # as pred boxes are limited to 0 to 1 range, pred x,y + offset is limited to predicting elements inside a cell
-    y_pred_xy   = pred_boxes[...,0:2] + (grid)
+    y_pred_xy   = pred_boxes[...,0:2] +(grid)
     # w and h predicted are 0 to 1 with 1 being image size
     y_pred_wh   = pred_boxes[...,2:4]
     # probability that there is something to predict here
@@ -189,7 +190,7 @@ if args.train:
     adam = keras.optimizers.SGD(lr=float(args.learning_rate))
     model.compile(loss=custom_loss, optimizer=adam) # better
     print(model.summary())
-    model.fit(x_train, y_train, batch_size=64, epochs=int(args.epoch))
+    model.fit(x_train, y_train, batch_size=200, epochs=int(args.epoch))
 
     model.save_weights('simpleyolo.h5')
 else:

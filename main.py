@@ -7,7 +7,7 @@ from keras.layers import Dense, Dropout, Flatten, Input, Reshape
 from keras.layers import Conv2D, MaxPooling2D
 
 from keras.layers.advanced_activations import LeakyReLU, PReLU
-
+import os
 from keras import backend as K
 from keras.models import load_model
 import numpy as np
@@ -28,8 +28,8 @@ nb_boxes=2
 categories = 3
 grid_w=2
 grid_h=2
-cell_w=64
-cell_h=64
+cell_w=32
+cell_h=32
 img_w=grid_w*cell_w
 img_h=grid_h*cell_h
 
@@ -52,7 +52,6 @@ def load_image(j):
                    xarr+= [xarr[s] for s in range(len(xarr))]
                    
                trainarr = catarr + xarr    
-               print(trainarr)
                y_t.append(trainarr)
                
     
@@ -179,10 +178,17 @@ parser.add_argument('--epoch', help='epoch', const='int', nargs='?', default=1)
 args = parser.parse_args()
 
 if args.train:
+    
+    if os.path.exists('simpleyolo.h5'):
+    
+        print('loading weights')
+        model.load_weights('simpleyolo.h5')
+    
     model.fit(x_train, y_train, batch_size=64, epochs=int(args.epoch))
-    model.save_weights('weights_006.h5')
+
+    model.save_weights('simpleyolo.h5')
 else:
-    model.load_weights('weights_006.h5')
+    model.load_weights('simpleyolo.h5')
 
 axes=[0 for _ in range(100)]
 fig, axes = plt.subplots(5,5)

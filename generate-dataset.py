@@ -12,8 +12,8 @@ def get_word(c):
     words = ["Varun", "Kapoor", "none"]
     return (words[c], one_hot(c,len(words)))
 
-cell_w = 64
-cell_h = 64
+cell_w = 32
+cell_h = 32
 grid_w = 2
 grid_h = 2
 img_w=grid_w*cell_w

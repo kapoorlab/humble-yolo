@@ -4,7 +4,7 @@ Tutorial details:
 https://medium.com/@ecaradec/humble-yolo-implementation-in-keras-64d1b63b4412
 YOLO is a deep learning model that can predict object classes and location. It belongs to the group of classifications algorithm. 
 # Data generation
-Here we generate images with the texts "Trump Lost", "Biden Won", "Haris Won", randomly placed inside an image. As we are generating images, we write bounding boxes of objects in a text file named the same way as their image.
+Here we generate images with the texts "TLost", "BWon", "HWon", randomly placed inside an image. As we are generating images, we write bounding boxes of objects in a text file named the same way as their image.
 
 # Installation Instructions
 In order to use this program tensorflow and keras library are required. 

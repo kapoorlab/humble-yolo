@@ -1,6 +1,8 @@
 humble-yolo is a minimal implementation of YOLO v1 to learn about the amazing YOLO algorithm.
-Tutorial details:
+Video Tutorial details:
+https://www.youtube.com/channel/UC-vF61JAw56w_DoXtLqaaIw
 
+Detailed explanations:
 https://medium.com/@ecaradec/humble-yolo-implementation-in-keras-64d1b63b4412
 YOLO is a deep learning model that can predict object classes and location. It belongs to the group of classifications algorithm. 
 # Data generation

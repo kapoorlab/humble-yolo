@@ -8,7 +8,7 @@ from keras.layers import Conv2D, MaxPooling2D
 
 from keras.layers.advanced_activations import LeakyReLU, PReLU
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 os.environ["HDF5_USE-FILE_LOCKING"]="FALSE"
 from keras import backend as K
 from keras.models import load_model
@@ -55,7 +55,7 @@ def load_image(j):
                    newxarr+= [xarr[s] for s in range(len(xarr))]
                    
                trainarr = catarr + newxarr    
-               
+                
                y_t.append(trainarr)
                
     
@@ -112,7 +112,7 @@ def custom_loss(y_true, y_pred):
     # [[ 1.  1.]]]
     grid = np.array([ [[float(x),float(y)]]*nb_boxes   for y in range(grid_h) for x in range(grid_w)])
 
-    # first three values are classes : cat, rat, and none.
+    #
     # However yolo doesn't predict none as a class, none is everything else and is just not predicted
     # so I don't use it in the loss
     y_true_class = y_true[...,0:categories]
@@ -138,6 +138,7 @@ def custom_loss(y_true, y_pred):
     y_true_conf = true_boxes[...,4]
 
     clss_loss  = K.sum(K.square(y_true_class - y_pred_class), axis=-1)
+    #clss_loss = K.mean(K.categorical_crossentropy(y_true_class,y_pred_class), axis = -1)
     xy_loss    = K.sum(K.sum(K.square(y_true_xy - y_pred_xy),axis=-1)*y_true_conf, axis=-1)
     wh_loss    = K.sum(K.sum(K.square(K.sqrt(y_true_wh) - K.sqrt(y_pred_wh)), axis=-1)*y_true_conf, axis=-1)
 
@@ -155,7 +156,7 @@ def custom_loss(y_true, y_pred):
     conf_loss = K.sum(K.square(y_true_conf*iou - y_pred_conf), axis=-1)
 
     # final loss function
-    d =  1.5 * xy_loss + wh_loss + conf_loss + clss_loss
+    d =   (xy_loss + wh_loss) + conf_loss + clss_loss
     
     if False:
         d = tf.Print(d, [d], "loss")

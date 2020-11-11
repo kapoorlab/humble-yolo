@@ -55,7 +55,7 @@ def load_image(j):
                    newxarr+= [xarr[s] for s in range(len(xarr))]
                    
                trainarr = catarr + newxarr    
-               
+               print(trainarr)               
                y_t.append(trainarr)
                
     
